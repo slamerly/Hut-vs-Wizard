@@ -23,15 +23,17 @@ public class Pickup : MonoBehaviour
     private void Update()
     {
         Vector3 distanceToPlayer = player.transform.position - transform.position;
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (this.gameObject == cam.GetComponent<Vision>().obj)
         {
-            if (!heldFull)
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if (!heldObj && distanceToPlayer.magnitude < pickUpRange)
-                    PickUpObject();
+                if (!heldFull)
+                {
+                    if (!heldObj && distanceToPlayer.magnitude < pickUpRange)
+                        PickUpObject();
+                }
             }
         }
-
 
         if (heldObj && Input.GetKeyDown(KeyCode.Mouse1))
             DropObject();

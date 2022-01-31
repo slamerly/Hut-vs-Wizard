@@ -25,10 +25,10 @@ public class GameRule : MonoBehaviour
             idSelect = Random.Range(0, objectsMoveable.Length);
             objectsMoveableSelected[i] = objectsMoveable[idSelect];
 
-            Debug.Log("nom : " + objectsMoveableSelected[i].name);
-            Debug.Log("location départ : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
+           // Debug.Log("nom : " + objectsMoveableSelected[i].name);
+            //Debug.Log("location départ : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
             objectsMoveableSelected[i].GetComponent<Location>().referenceArea = RandomLocation(objectsMoveableSelected[i]);
-            Debug.Log("location modifié : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
+            //Debug.Log("location modifié : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
 
             RemoveObjectFromTab(idSelect);
 
@@ -37,9 +37,11 @@ public class GameRule : MonoBehaviour
         }
     }
 
-    /*void Start()
+    void Start()
     {
-        int idSelect;
+        for(int i=0; i<nbObjectsSelect; i++)
+            Debug.Log("nom : " + objectsMoveableSelected[i].name);
+        /*int idSelect;
         objectsMoveable = GameObject.FindGameObjectsWithTag("ObjectMoveable");
         // Randomination du nombre de d'objet selectionnés
         //nbObjectsSelect = Random.Range(1, objectsMoveable.Length);
@@ -61,8 +63,8 @@ public class GameRule : MonoBehaviour
 
             objectsMoveableSelected[i].GetComponent<Outline>().OutlineColor = Color.green;
             objectsMoveableSelected[i].GetComponent<Outline>().enabled = true;
-        }
-    }*/
+        }*/
+    }
 
     private void Update()
     {
@@ -77,18 +79,23 @@ public class GameRule : MonoBehaviour
             {
                 if (!objectsMoveable[i].GetComponent<Location>().IsInGoodArea())
                 {
+                    objectsMoveable[i].GetComponent<Outline>().enabled = true;
+                    objectsMoveable[i].GetComponent<Outline>().OutlineColor = Color.red;
+
                     for (int j = 0; j < nbObjectsSelect; j++)
                     {
                         if(objectsMoveable[i] == objectsMoveableSelected[j])
                         {
+                            Debug.Log("nom : " + objectsMoveableSelected[j].name + ", green");
                             objectsMoveableSelected[j].GetComponent<Outline>().enabled = true;
                             objectsMoveableSelected[j].GetComponent<Outline>().OutlineColor = Color.green;
                         }
-                        else
+                        /*else
                         {
                             objectsMoveable[i].GetComponent<Outline>().enabled = true;
                             objectsMoveable[i].GetComponent<Outline>().OutlineColor = Color.red;
                         }
+                        */
                     }
                 }
                 else
