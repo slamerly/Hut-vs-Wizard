@@ -5,18 +5,30 @@ using UnityEngine;
 public class GameRule : MonoBehaviour
 {
     public int nbObjectsSelect;
+    public GameObject endscreen;
 
     GameObject[] objectsMoveable;
     GameObject[] objectsMoveableSelected;
     GameObject objVisu;
+    GameObject crosshair;
 
     private void Awake()
     {
+        crosshair = GameObject.Find("Crosshair");
+        Time.timeScale = 1f;
+
         int idSelect;
         objectsMoveable = GameObject.FindGameObjectsWithTag("ObjectMoveable");
-        // Randomination du nombre de d'objet selectionnés - un peu beaucoup - 
-        //nbObjectsSelect = Random.Range(1, objectsMoveable.Length);
-        nbObjectsSelect = Random.Range(1, 11);
+
+        for (int i = 0; i < objectsMoveable.Length; i++)
+        {
+            objectsMoveable[i].GetComponent<Pickup>().heldObj = false;
+            //objectsMoveable[i].GetComponent<Pickup>().heldFull = false;
+        }
+
+        //Debug.Log("nombre objets bougeables : " + objectsMoveable.Length);
+        nbObjectsSelect = Random.Range(1, 10);
+        //nbObjectsSelect = Random.Range(1, 2);
 
         objectsMoveableSelected = new GameObject[nbObjectsSelect];
 
@@ -24,46 +36,13 @@ public class GameRule : MonoBehaviour
         {
             idSelect = Random.Range(0, objectsMoveable.Length);
             objectsMoveableSelected[i] = objectsMoveable[idSelect];
-
-           // Debug.Log("nom : " + objectsMoveableSelected[i].name);
-            //Debug.Log("location départ : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
             objectsMoveableSelected[i].GetComponent<Location>().referenceArea = RandomLocation(objectsMoveableSelected[i]);
-            //Debug.Log("location modifié : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
 
             RemoveObjectFromTab(idSelect);
 
             objectsMoveableSelected[i].GetComponent<Outline>().OutlineColor = Color.green;
             objectsMoveableSelected[i].GetComponent<Outline>().enabled = true;
         }
-    }
-
-    void Start()
-    {
-        for(int i=0; i<nbObjectsSelect; i++)
-            Debug.Log("nom : " + objectsMoveableSelected[i].name);
-        /*int idSelect;
-        objectsMoveable = GameObject.FindGameObjectsWithTag("ObjectMoveable");
-        // Randomination du nombre de d'objet selectionnés
-        //nbObjectsSelect = Random.Range(1, objectsMoveable.Length);
-        nbObjectsSelect = Random.Range(1, 5);
-
-        objectsMoveableSelected = new GameObject[nbObjectsSelect];        
-
-        for (int i=0; i<nbObjectsSelect; i++)
-        {
-            idSelect = Random.Range(0, objectsMoveable.Length);
-            objectsMoveableSelected[i] = objectsMoveable[idSelect];
-
-            Debug.Log("nom : " + objectsMoveableSelected[i].name);
-            Debug.Log("location départ : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
-            objectsMoveableSelected[i].GetComponent<Location>().referenceArea = RandomLocation(objectsMoveableSelected[i]);
-            Debug.Log("location modifié : " + objectsMoveableSelected[i].GetComponent<Location>().referenceArea);
-
-            RemoveObjectFromTab(idSelect);
-
-            objectsMoveableSelected[i].GetComponent<Outline>().OutlineColor = Color.green;
-            objectsMoveableSelected[i].GetComponent<Outline>().enabled = true;
-        }*/
     }
 
     private void Update()
@@ -86,23 +65,17 @@ public class GameRule : MonoBehaviour
                     {
                         if(objectsMoveable[i] == objectsMoveableSelected[j])
                         {
-                            Debug.Log("nom : " + objectsMoveableSelected[j].name + ", green");
+                            //Debug.Log("nom : " + objectsMoveableSelected[j].name + ", green");
                             objectsMoveableSelected[j].GetComponent<Outline>().enabled = true;
                             objectsMoveableSelected[j].GetComponent<Outline>().OutlineColor = Color.green;
                         }
-                        /*else
-                        {
-                            objectsMoveable[i].GetComponent<Outline>().enabled = true;
-                            objectsMoveable[i].GetComponent<Outline>().OutlineColor = Color.red;
-                        }
-                        */
                     }
                 }
                 else
                     objectsMoveable[i].GetComponent<Outline>().enabled = false;
             }
         }
-        
+        EndGame();
     }
 
     void RemoveObjectFromTab(int id)
@@ -110,6 +83,26 @@ public class GameRule : MonoBehaviour
         for(int i=id; i<objectsMoveable.Length-1; i++)
         {
             objectsMoveable[i] = objectsMoveable[i++];
+        }
+    }
+
+    void EndGame()
+    {
+        int cpt = 0;
+        for (int i = 0; i < objectsMoveable.Length; i++)
+        {
+            if (objectsMoveable[i].GetComponent<Location>().IsInGoodArea())
+                cpt++;
+        }
+
+        if (cpt == objectsMoveable.Length)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0f;
+            crosshair.SetActive(false);
+            endscreen.SetActive(true);
+            //Debug.Log("EndGame");
         }
     }
 

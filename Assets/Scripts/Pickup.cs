@@ -8,16 +8,17 @@ public class Pickup : MonoBehaviour
 
     public float pickUpRange = 5;
     public float dropForwardForce, dropUpwardForce;
+    public bool heldObj = false;
+    public static bool heldFull = false;
 
     private Vector3 saveScaleObject;
-    private bool heldObj = false;
-    private static bool heldFull = false;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         objectContainer = GameObject.FindGameObjectWithTag("ObjectContainer");
         cam = GameObject.FindGameObjectWithTag("MainCamera");
+        heldFull = heldObj;
     }
 
     private void Update()
